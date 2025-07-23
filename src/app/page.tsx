@@ -3,13 +3,13 @@ import React, { useState, useEffect } from "react";
 import { motion, circOut } from "framer-motion";
 import { SiNextdotjs, SiReact, SiTypescript, SiTailwindcss, SiNodedotjs, SiFramer, SiSocketdotio, SiVercel, SiSass, SiExpress, SiMongodb, SiPython } from "react-icons/si";
 import { FaLinkedin, FaGithub, FaTwitter, FaArrowRight, FaRegLightbulb, FaCode, FaCheckCircle, FaShieldAlt, FaRocket } from "react-icons/fa";
-import Carousel from "../components/Carousel";
 import { SiVscodium, SiFigma, SiDocker, SiPostman, SiGit, SiJira, SiAdobephotoshop, SiVmware, SiCloudflare, SiAmazon } from "react-icons/si";
-import { FaQuestionCircle, FaPlusCircle } from "react-icons/fa";
-import { FaCertificate, FaTrophy } from "react-icons/fa";
+import { FaPlusCircle } from "react-icons/fa";
 import emailjs from 'emailjs-com';
-import { Highlight, Language, themes } from "prism-react-renderer";
+import { Highlight, Language, themes } from 'prism-react-renderer';
+import type { RenderProps, Token } from 'prism-react-renderer';
 import ReactDOM from "react-dom";
+import Image from 'next/image';
 
 const techIcons: Record<string, React.ReactNode> = {
   "Next.js": <SiNextdotjs className="inline mr-2 text-xl align-middle" />,
@@ -36,46 +36,9 @@ const techIcons: Record<string, React.ReactNode> = {
   "AWS": <SiAmazon className="inline mr-2 text-xl align-middle" />,
 };
 
-const projects = [
-  {
-    title: "DevConnect Platform",
-    description: "A real-time chat and collaboration platform for developers, featuring channels, DMs, and code sharing.",
-    image: "/project-devconnect.jpg",
-    tech: ["Next.js", "TypeScript", "Socket.io", "Tailwind"],
-    demo: "#",
-    github: "#",
-  },
-  {
-    title: "Portfolio Builder",
-    description: "A drag-and-drop portfolio site builder with live preview, custom themes, and instant deployment.",
-    image: "/project-portfolio.jpg",
-    tech: ["React", "Framer Motion", "Vercel", "Sass"],
-    demo: "#",
-    github: "#",
-  },
-  {
-    title: "CodeQuest Game",
-    description: "A gamified coding challenge platform with leaderboards, badges, and interactive puzzles.",
-    image: "/project-codequest.jpg",
-    tech: ["Node.js", "Express", "MongoDB", "React"],
-    demo: "#",
-    github: "#",
-  },
-];
-
 const sectionVariants = {
   hidden: { opacity: 0, y: 40 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: circOut } },
-};
-
-const cardVariants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.15, duration: 0.7, ease: circOut },
-  }),
-  hover: { scale: 1.04, boxShadow: "0 8px 32px rgba(80,80,180,0.15)" },
 };
 
 function TypewriterText({ text, delay = 30, className = "" }: { text: string; delay?: number; className?: string }) {
@@ -141,17 +104,17 @@ function CodeExampleCard(props: CodeExampleCardProps) {
       <div className={codeBlockClass} style={codeBlockStyle}>
         {mounted && (
           <Highlight code={code} language={language as Language} theme={themes.duotoneDark}>
-            {({ className, style, tokens, getLineProps, getTokenProps }: any) => (
+            {({ className, style, tokens, getLineProps, getTokenProps }: RenderProps) => (
               <pre className={className + " text-xs p-3 m-0"} style={{ ...style, background: 'none' }}>
-                {tokens.map((line: any, i: number) => {
+                {tokens.map((line: Token[], i: number) => {
                   const lineProps = getLineProps({ line, key: i });
                   const { key: lineKey, ...restLineProps } = lineProps;
                   return (
-                    <div key={lineKey} {...restLineProps}>
-                      {line.map((token: any, key: number) => {
+                    <div key={String(lineKey)} {...restLineProps}>
+                      {line.map((token: Token, key: number) => {
                         const tokenProps = getTokenProps({ token, key });
                         const { key: tokenKey, ...restTokenProps } = tokenProps;
-                        return <span key={tokenKey} {...restTokenProps} />;
+                        return <span key={String(tokenKey)} {...restTokenProps} />;
                       })}
                     </div>
                   );
@@ -176,17 +139,17 @@ function CodeExampleCard(props: CodeExampleCardProps) {
               <h4 className="text-xl font-bold mb-4 text-blue-300">{title}</h4>
               <div className={codeBlockClass.replace('mb-2', 'mb-4')} style={{ ...codeBlockStyle, maxHeight: lineCount > 8 ? 320 : 'none' }}>
                 <Highlight code={code} language={language as Language} theme={themes.duotoneDark}>
-                  {({ className, style, tokens, getLineProps, getTokenProps }: any) => (
+                  {({ className, style, tokens, getLineProps, getTokenProps }: RenderProps) => (
                     <pre className={className + " text-sm p-4 m-0"} style={{ ...style, background: 'none' }}>
-                      {tokens.map((line: any, i: number) => {
+                      {tokens.map((line: Token[], i: number) => {
                         const lineProps = getLineProps({ line, key: i });
                         const { key: lineKey, ...restLineProps } = lineProps;
                         return (
-                          <div key={lineKey} {...restLineProps}>
-                            {line.map((token: any, key: number) => {
+                          <div key={String(lineKey)} {...restLineProps}>
+                            {line.map((token: Token, key: number) => {
                               const tokenProps = getTokenProps({ token, key });
                               const { key: tokenKey, ...restTokenProps } = tokenProps;
-                              return <span key={tokenKey} {...restTokenProps} />;
+                              return <span key={String(tokenKey)} {...restTokenProps} />;
                             })}
                           </div>
                         );
@@ -265,9 +228,11 @@ export default function Home() {
       )}
       {/* Sidebar */}
       <aside className="hidden lg:flex flex-col items-center w-80 min-h-screen bg-black/70 border-r border-gray-800 px-8 py-12 fixed left-0 top-0 z-20 shadow-2xl backdrop-blur-md">
-        <img
+        <Image
           src="/1732760719879.jpg"
           alt="Jaydn D. Lemin profile picture"
+          width={128}
+          height={128}
           className="w-32 h-32 rounded-full object-cover border-4 border-blue-500 shadow-xl mb-6"
         />
         <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 mb-2">Jaydn D. Lemin</h1>
@@ -324,7 +289,7 @@ export default function Home() {
           variants={sectionVariants}
         >
           <h3 className="text-4xl font-extrabold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 drop-shadow-lg">About Me</h3>
-          <p className="text-xl text-gray-200 mb-10 max-w-3xl mx-auto">I'm a cybersecurity professional and systems specialist with expertise in IT infrastructure, web development, and system administration. I build secure, scalable solutions and maintain critical business systems while staying current with emerging technologies.</p>
+          <p className="text-xl text-gray-200 mb-10 max-w-3xl mx-auto">I&apos;m a cybersecurity professional and systems specialist with expertise in IT infrastructure, web development, and system administration. I build secure, scalable solutions and maintain critical business systems while staying current with emerging technologies.</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 w-full max-w-3xl">
             <motion.div 
               className="bg-gray-900/80 border border-blue-700 text-blue-200 rounded-2xl shadow-xl p-8 transform hover:scale-105 hover:border-blue-400 transition-all duration-300 backdrop-blur"
@@ -554,7 +519,7 @@ export default function Home() {
                 <div className="text-sm text-gray-400">2019 - 2025</div>
                 <ul className="list-disc ml-5 mt-2 text-gray-600 dark:text-gray-300 text-sm">
                   <li>Built and maintained internal tools and applications</li>
-                  <li>Managed and maintained the company's IT infrastructure</li>
+                  <li>Managed and maintained the company&apos;s IT infrastructure</li>
                   <li>Provided technical support to employees</li>
                 </ul>
               </div>
@@ -609,32 +574,4 @@ function WorkflowStep({ icon, label, delay }: { icon: React.ReactNode; label: st
 }
 function WorkflowArrow() {
   return <span className="mx-2 text-2xl text-blue-400">→</span>;
-}
-function ThemeDemoToggle() {
-  const [dark, setDark] = React.useState(false);
-  React.useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setDark(document.documentElement.classList.contains('dark'));
-    }
-  }, []);
-  const toggleTheme = () => {
-    const isDark = document.documentElement.classList.contains('dark');
-    if (isDark) {
-      document.documentElement.classList.remove('dark');
-      setDark(false);
-    } else {
-      document.documentElement.classList.add('dark');
-      setDark(true);
-    }
-  };
-  return (
-    <button
-      className={`flex items-center gap-2 px-6 py-2 rounded-full font-bold shadow-lg border-2 border-blue-400 transition-colors duration-300 ${dark ? 'bg-gray-900 text-blue-200' : 'bg-white text-blue-700'}`}
-      onClick={toggleTheme}
-      aria-label="Toggle theme demo"
-    >
-      {dark ? <FaRegLightbulb className="text-yellow-300" /> : <FaRegLightbulb className="text-blue-400" />}
-      {dark ? 'Dark Mode' : 'Light Mode'}
-    </button>
-  );
 }
