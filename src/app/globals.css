@@ -53,3 +53,27 @@ body {
   background-size: 200% 200%;
   animation: gradient-move 10s linear infinite;
 }
+
+/* Custom scrollbar for code blocks */
+.custom-scrollbar::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 4px;
+}
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #444 #282a36;
+}
+
+/* Hide scrollbars but allow scrolling */
+.custom-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+.custom-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
